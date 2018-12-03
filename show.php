@@ -10,6 +10,34 @@ $rowcount=mysqli_num_rows($query);
 
 ?>
 <a href="insert.php">Add User</a>
+
+<form method="post" action="show.php">
+    <input type="text" name="search" placeholder="Search for student">
+    <input type="submit" value="Submit">
+</form>
+
+
+
+
+<?php 
+
+$search_query = $_POST['search'];
+$search_query = htmlspecialchars($search_query); 
+// changes characters used in html to their equivalents, for example: < to &gt;
+ $search_query = mysqli_real_escape_string($con,$search_query);
+// makes sure nobody uses SQL injection		
+$raw_results = mysqli_query($con,"SELECT * FROM register
+            WHERE `username` LIKE '%".$search_query."%'") or die(mysql_error());
+if(mysqli_num_rows($raw_results) > 0){ 
+            while($results = mysqli_fetch_array($raw_results)){
+                echo "<p><h3>".$results['username']."</h3>".$results['address']."</p>";     
+            }   
+        }
+        else{ 
+            echo "No results";
+        }
+?>
+<br><br>
 <table>
 <tr>
 <th>Id</th>
@@ -36,5 +64,7 @@ $rowcount=mysqli_num_rows($query);
 	<td><a href="delete.php?delid=<?php echo $show['id'];?>">Delete</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="edit.php?editid=<?php echo $show['id'];?>">Edit</a></td>
 	
 	</tr>
-<?php }?>
+<?php } ?>
 </table>
+
+
